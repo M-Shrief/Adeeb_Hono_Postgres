@@ -1,10 +1,18 @@
 import { app } from './app';
 import { serve } from '@hono/node-server';
+// Database
+import { connectDB } from './db';
+// Cache
+import { cacheClient } from './cache';
 // Utils
 import { logger } from './utils/logger';
 
 export const start = async () => {
     try {
+        await connectDB();
+
+        await cacheClient.ping();
+
         serve({
            fetch: app.fetch,
             port: 3000
