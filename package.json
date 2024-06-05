@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.11.2",
-    "hono": "^4.4.3"
+    "hono": "^4.4.3",
+    "winston": "^3.13.0"
   }
 }

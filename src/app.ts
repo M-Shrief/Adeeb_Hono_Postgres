@@ -16,10 +16,8 @@ app.use(cors());
 app.use(compress());
 
 app.get('/', (c) => {
-  // c.status(301)
-  // return c.json("Hello Hono!")
-  return c.notFound(
-  )
+  c.status(200)
+  return c.json("Hello Hono!")
 });
 
 // ...
