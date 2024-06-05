@@ -6,7 +6,8 @@ import { cors } from 'hono/cors'
 import { compress } from 'hono/compress'
 import { HTTPException } from 'hono/http-exception'
 import { StatusCode } from 'hono/utils/http-status'
-
+import HttpStatusCode from './utils/httpStatusCode'
+// Utils
 
 export const app = new Hono()
 
@@ -16,7 +17,7 @@ app.use(cors());
 app.use(compress());
 
 app.get('/', (c) => {
-  c.status(200)
+  c.status(HttpStatusCode.OK)
   return c.json("Hello Hono!")
 });
 
@@ -24,7 +25,7 @@ app.get('/', (c) => {
 
 app.get('/error', async (c, next) => {
   const errorResponse = new Response('Unauthorized', {
-    status: 401,
+    status: HttpStatusCode.UNAUTHORIZED,
     headers: {
       Authenticate: 'error="invalid_token"',
     },
