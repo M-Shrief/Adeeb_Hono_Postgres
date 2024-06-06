@@ -2,7 +2,7 @@ version: '3.8'
 # This service is built from the Dockerfile in the current directory.
 services:
   server:
-    container_name: adeeb_mono
+    container_name: adeeb_hono
     build:
       context: .
     restart: unless-stopped
