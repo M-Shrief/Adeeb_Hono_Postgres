@@ -44,9 +44,7 @@ export const PoetService = {
   ): Promise<PoetType | false> {
     const newPoet = await PoetDB.update(id, poetData);
     if (!newPoet) return false;
-    if(await PoetRedis.exists(id) != 0) {
-      await PoetRedis.delete(id);
-    }
+    await PoetRedis.delete(id);
     return newPoet;
   },
 
