@@ -18,6 +18,7 @@ poetRoute.get('/', async (c) => {
 
 poetRoute.get('/:id', idValidator(), async (c) => {
   const poet = await PoetService.getOne(c.req.param('id'));
+  if(!poet) return c.json(ERROR_MSG.NOT_FOUND, HttpStatusCode.NOT_FOUND)
   return c.json(poet, HttpStatusCode.OK);
 });
 
