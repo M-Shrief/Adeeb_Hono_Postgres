@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { array } from 'valibot';
 // Component
 import { PoetService } from './service'
 import { ERROR_MSG, PoetType } from './interface'
@@ -35,7 +36,15 @@ poetRoute.post(
     }
 )
 
-// poetRoute.post('/many', (c) => c.json('create many poets', HttpStatusCode.CREATED))
+poetRoute.post('/many',
+    jsonValidator(array(createSchema)),
+    async (c) => {
+        const newData = await c.req.json()
+        const newPoets = await PoetService.postMany(newData);
+        if(!newPoets) c.json(ERROR_MSG.NOT_VALID, HttpStatusCode.NOT_ACCEPTABLE)
+        return c.json(newPoets, HttpStatusCode.CREATED)
+    }
+)
 
 poetRoute.put(
     '/:id',

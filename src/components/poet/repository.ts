@@ -23,6 +23,12 @@ export const PoetDB = {
     return await poet.save();
   },
 
+  async postMany(
+    poetsData: PoetType[],
+  ): Promise<PoetType[]> {
+    return await Poet.insertMany(poetsData);
+  },
+
   async update(
     _id: string,
     poetData: PoetType,

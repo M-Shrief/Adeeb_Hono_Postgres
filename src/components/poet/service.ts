@@ -29,6 +29,13 @@ export const PoetService = {
     if (!newPoet) return false;
     return newPoet;
   },
+  async postMany(
+    poetsData: PoetType[],
+  ): Promise< PoetType[] | false> {
+    const newPoets = await PoetDB.postMany(poetsData);
+    if (newPoets.length == 0) return false;
+    return newPoets
+  },
 
   async update(
     id: string,
