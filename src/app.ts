@@ -6,8 +6,10 @@ import { cors } from 'hono/cors';
 import { compress } from 'hono/compress';
 // import { HTTPException } from 'hono/http-exception'
 // import { StatusCode } from 'hono/utils/http-status'
+
 // Routes
 import { poetRoute } from './components/poet/route';
+import { poemRoute } from './components/poem/route';
 // Utils
 import HttpStatusCode from './utils/httpStatusCode';
 
@@ -24,6 +26,7 @@ app.get('/', (c) => {
 });
 
 app.route('/api/poets', poetRoute);
+app.route('/api/poems', poemRoute);
 
 // ...
 
