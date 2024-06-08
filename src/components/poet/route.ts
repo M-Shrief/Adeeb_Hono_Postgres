@@ -1,13 +1,11 @@
-import { Hono } from 'hono'
-import { vValidator } from '@hono/valibot-validator'
-import { flatten, object } from 'valibot'
+import { Hono } from 'hono';
 // Component
 import { PoetService } from './service'
 import { ERROR_MSG, PoetType } from './interface'
 import { createSchema, updateSchema } from './schema'
 // Utils
 import HttpStatusCode from '../../utils/httpStatusCode'
-import { idSchema } from '../../utils/schemas'
+import { idValidator, jsonValidator } from '../../utils/validators'
 
 export const poetRoute = new Hono()
 
@@ -19,11 +17,7 @@ poetRoute.get('/', async (c) => {
 
 poetRoute.get(
     '/:id',
-    vValidator('param', object({id: idSchema}), (result, c) => {
-        if (!result.success) {
-            return c.json({success: result.success, errors: flatten(result.issues).nested}, HttpStatusCode.NOT_ACCEPTABLE)
-        }
-    }),
+    idValidator(),
     async (c) => {
         const poet = await PoetService.getOne(c.req.param('id'))
         return c.json(poet, HttpStatusCode.OK)
@@ -32,11 +26,7 @@ poetRoute.get(
 
 poetRoute.post(
     '/', 
-    vValidator('json', createSchema, (result, c) => {
-        if (!result.success) {
-            return c.json({success: result.success, errors: flatten(result.issues).nested}, HttpStatusCode.NOT_ACCEPTABLE)
-        }
-    }),
+    jsonValidator(createSchema),
     async (c) => {
         const poetData = await c.req.json()
         const newPoet = await PoetService.post(poetData as PoetType) 
@@ -49,16 +39,8 @@ poetRoute.post(
 
 poetRoute.put(
     '/:id',
-    vValidator('param', object({id: idSchema}), (result, c) => {
-        if (!result.success) {
-            return c.json({success: result.success, errors: flatten(result.issues).nested}, HttpStatusCode.NOT_ACCEPTABLE)
-        }
-    }),
-    vValidator('json', updateSchema, (result, c) => {
-        if (!result.success) {
-            return c.json({success: result.success, errors: flatten(result.issues).nested}, HttpStatusCode.NOT_ACCEPTABLE)
-        }
-    }),
+    idValidator(),
+    jsonValidator(updateSchema),
     async(c) => {
         const newData = await c.req.json()
         const newPoet = await PoetService.update(c.req.param('id'), newData)
@@ -69,11 +51,7 @@ poetRoute.put(
 
 poetRoute.delete(
     '/:id',
-    vValidator('param', object({id: idSchema}), (result, c) => {
-        if (!result.success) {
-            return c.json({success: result.success, errors: flatten(result.issues).nested}, HttpStatusCode.NOT_ACCEPTABLE)
-        }
-    }),
+    idValidator(),
     async(c) => {
         const deletedPoet = await PoetService.delete(c.req.param('id'))
         if(!deletedPoet) c.json(ERROR_MSG.NOT_FOUND, HttpStatusCode.NOT_ACCEPTABLE)
