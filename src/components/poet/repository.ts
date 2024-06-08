@@ -1,6 +1,7 @@
 import { Poet } from './model';
 import { cacheClient } from '../../cache';
 import { PoetType } from './interface';
+import {  Types } from 'mongoose';
 
 export const PoetDB = {
   async getAll(): Promise<PoetType[]> {
@@ -8,9 +9,39 @@ export const PoetDB = {
   },
 
   async getOne(id: string): Promise<PoetType | null> {
-    const poet = await Poet.findById(id, { name: 1, bio: 1, time_period: 1 });
-    if (!poet) return null;
-    return poet;
+    const poet = await Poet.aggregate<PoetType>([
+      {
+        $match: { _id: new Types.ObjectId(id) },
+      },
+      {
+        $unset: [
+          "reviewed",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      {
+        $lookup: {
+          from: "poems",
+          localField: "_id",
+          foreignField: "poet",
+          as: "poems",
+          pipeline: [
+            {
+              $unset: [
+                "poet",
+                "verses",
+                "reviewed",
+                "createdAt",
+                "updatedAt"
+              ]
+            },      
+          ]
+        },
+      },
+    ])
+    if(poet.length == 0) return null
+    return poet[0];
   },
 
   async post(poetData: PoetType): Promise<PoetType> {
