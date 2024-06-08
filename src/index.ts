@@ -8,22 +8,21 @@ import { cacheClient } from './cache';
 import { logger } from './utils/logger';
 
 export const start = async () => {
-    try {
-        await connectDB();
+  try {
+    await connectDB();
 
-        await cacheClient.ping();
+    await cacheClient.ping();
 
-        serve({
-           fetch: app.fetch,
-            port: 3000
-        })
+    serve({
+      fetch: app.fetch,
+      port: 3000,
+    });
 
-        logger.info('App Server at: localhost:3000')
-
-    } catch (err) {
-        logger.error(err);
-        process.exit(1);
-    }
+    logger.info('App Server at: localhost:3000');
+  } catch (err) {
+    logger.error(err);
+    process.exit(1);
+  }
 };
 
-start()
+start();

@@ -1,5 +1,5 @@
-import { Poet } from  './model'
-import {cacheClient} from '../../cache';
+import { Poet } from './model';
+import { cacheClient } from '../../cache';
 import { PoetType } from './interface';
 
 export const PoetDB = {
@@ -10,7 +10,7 @@ export const PoetDB = {
   async getOne(id: string): Promise<PoetType | null> {
     const poet = await Poet.findById(id, { name: 1, bio: 1, time_period: 1 });
     if (!poet) return null;
-    return  poet;
+    return poet;
   },
 
   async post(poetData: PoetType): Promise<PoetType> {
@@ -23,17 +23,12 @@ export const PoetDB = {
     return await poet.save();
   },
 
-  async postMany(
-    poetsData: PoetType[],
-  ): Promise<PoetType[]> {
+  async postMany(poetsData: PoetType[]): Promise<PoetType[]> {
     return await Poet.insertMany(poetsData);
   },
 
-  async update(
-    _id: string,
-    poetData: PoetType,
-  ): Promise<PoetType | null> {
-    return await Poet.findByIdAndUpdate(_id, { $set: poetData }, {new: true});
+  async update(_id: string, poetData: PoetType): Promise<PoetType | null> {
+    return await Poet.findByIdAndUpdate(_id, { $set: poetData }, { new: true });
   },
 
   async delete(id: string): Promise<PoetType | null> {
@@ -46,13 +41,17 @@ export const PoetRedis = {
     return await cacheClient.get(`poet:${id}`);
   },
   async set(id: string, poet: PoetType): Promise<string | null> {
-    return await cacheClient
-      .set(`poet:${id}`, JSON.stringify(poet), "EX", 60 * 15 );
+    return await cacheClient.set(
+      `poet:${id}`,
+      JSON.stringify(poet),
+      'EX',
+      60 * 15,
+    );
   },
   async exists(id: string): Promise<number> {
-    return await cacheClient.exists(`poet:${id}`)
+    return await cacheClient.exists(`poet:${id}`);
   },
   async delete(id: string): Promise<number> {
-    return await cacheClient.del(`poet:${id}`)
-  }
+    return await cacheClient.del(`poet:${id}`);
+  },
 };

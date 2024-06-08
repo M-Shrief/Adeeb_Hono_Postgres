@@ -1,3 +1,3 @@
-import { length, object, pipe, string } from 'valibot'
+import { length, object, pipe, string } from 'valibot';
 
-export const idSchema = pipe(string(), length(24))
+export const idSchema = pipe(string(), length(24));

@@ -1,29 +1,29 @@
-import { Hono } from 'hono'
+import { Hono } from 'hono';
 // Middleware
-import { logger } from 'hono/logger'
-import { secureHeaders } from 'hono/secure-headers'
-import { cors } from 'hono/cors'
-import { compress } from 'hono/compress'
+import { logger } from 'hono/logger';
+import { secureHeaders } from 'hono/secure-headers';
+import { cors } from 'hono/cors';
+import { compress } from 'hono/compress';
 // import { HTTPException } from 'hono/http-exception'
 // import { StatusCode } from 'hono/utils/http-status'
 // Routes
-import {poetRoute} from './components/poet/route'
+import { poetRoute } from './components/poet/route';
 // Utils
-import HttpStatusCode from './utils/httpStatusCode'
+import HttpStatusCode from './utils/httpStatusCode';
 
-export const app = new Hono()
+export const app = new Hono();
 
 app.use(logger());
-app.use(secureHeaders())
+app.use(secureHeaders());
 app.use(cors());
 app.use(compress());
 
 app.get('/', (c) => {
-  c.status(HttpStatusCode.OK)
-  return c.json("Hello Hono!")
+  c.status(HttpStatusCode.OK);
+  return c.json('Hello Hono!');
 });
 
-app.route('/api/poets', poetRoute)
+app.route('/api/poets', poetRoute);
 
 // ...
 
@@ -45,6 +45,6 @@ app.route('/api/poets', poetRoute)
 //   } else {
 //     c.status(400)
 //     return c.text("Error, try again later")
-//   }  
+//   }
 
 // })
