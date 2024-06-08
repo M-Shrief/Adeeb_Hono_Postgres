@@ -7,7 +7,7 @@ export const PoetDB = {
     return await Poet.find({});
   },
 
-  async getOneWithLiterature(id: string): Promise<PoetType | null> {
+  async getOne(id: string): Promise<PoetType | null> {
     const poet = await Poet.findById(id, { name: 1, bio: 1, time_period: 1 });
     if (!poet) return null;
     return  poet;

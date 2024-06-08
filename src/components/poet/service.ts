@@ -2,6 +2,7 @@
 import {PoetDB, PoetRedis} from './repository'
 // Types
 import { PoetType } from './interface';
+
 export const PoetService = {
   async getAll(): Promise<PoetType[] | false> {
     const poets = await PoetDB.getAll()
@@ -15,7 +16,7 @@ export const PoetService = {
     if (cached) {
       poet = JSON.parse(cached);
     } else {
-      poet = await PoetDB.getOneWithLiterature(id);
+      poet = await PoetDB.getOne(id);
     }
     if (!poet) return false;
     await PoetRedis.set(id, poet)
