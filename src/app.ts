@@ -11,6 +11,7 @@ import { compress } from 'hono/compress';
 import { poetRoute } from './components/poet/route';
 import { poemRoute } from './components/poem/route';
 import { proseRoute } from './components/prose/route';
+import { chosenVerseRoute } from './components/chosenVerse/route';
 // Utils
 import HttpStatusCode from './utils/httpStatusCode';
 
@@ -29,6 +30,7 @@ app.get('/', (c) => {
 app.route('/api/poets', poetRoute);
 app.route('/api/poems', poemRoute);
 app.route('/api/proses', proseRoute);
+app.route('/api/chosenverses', chosenVerseRoute);
 
 // ...
 
