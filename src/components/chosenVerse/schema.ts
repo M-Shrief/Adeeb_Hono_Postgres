@@ -10,14 +10,14 @@ import {
     boolean,
   } from 'valibot';
 // Utils
-import { idSchema, versesSchema } from '../../utils/schemas';
+import { idSchema, versesSchema, tagsSchema } from '../../utils/schemas';
   
 
 export const createSchema = object({
     poet: idSchema,
     poem: idSchema,
     verses: versesSchema,
-    tags: pipe(string(), trim(), minLength(4), maxLength(50)),
+    tags: tagsSchema,
     reviewed: boolean()
 })
 
@@ -25,6 +25,6 @@ export const updateSchema = object({
     poet: optional(idSchema),
     poem: optional(idSchema),
     verses: optional(versesSchema),
-    tags: optional(pipe(string(), trim(), minLength(4), maxLength(50))),
+    tags: optional(tagsSchema),
     reviewed: optional(boolean())
 })

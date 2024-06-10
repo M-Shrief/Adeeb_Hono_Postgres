@@ -9,6 +9,8 @@ import {
   minLength,
   boolean,
 } from 'valibot';
+// utils
+import { nameSchema } from '../../utils/schemas';
 
 const timePeriod = [
   'جاهلي',
@@ -22,16 +24,18 @@ const timePeriod = [
 
 const TimePeriodSchema = picklist(timePeriod);
 
+const bioSchema = pipe(string(), trim(), minLength(4), maxLength(500))
+
 export const createSchema = object({
-  name: pipe(string(), trim(), minLength(4), maxLength(50)),
+  name: nameSchema,
   time_period: TimePeriodSchema,
-  bio: pipe(string(), trim(), minLength(4), maxLength(500)),
+  bio: bioSchema,
   reviewed: boolean(),
 });
 
 export const updateSchema = object({
-  name: optional(pipe(string(), trim(), minLength(4), maxLength(50))),
+  name: optional(nameSchema),
   time_period: optional(TimePeriodSchema),
-  bio: optional(pipe(string(), trim(), minLength(4), maxLength(500))),
+  bio: optional(bioSchema),
   reviewed: optional(boolean()),
 });
