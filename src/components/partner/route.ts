@@ -1,7 +1,4 @@
 import { Hono } from 'hono';
-import { jwt, type JwtVariables } from 'hono/jwt';
-// Config
-import { JWT_PUBLIC } from '../../config';
 // Component
 import {PartnerService} from './service'
 import { signupSchema, loginSchema, updateSchema} from './schema'
@@ -9,11 +6,11 @@ import { ERROR_MSG, PERMISSIONS } from './interface';
 // Utils
 import { jsonValidator } from '../../utils/validators';
 import HttpStatusCode from '../../utils/httpStatusCode';
-import { signToken, isAuthorized } from '../../utils/auth';
+import { signToken, isAuthenticated, isAuthorized } from '../../utils/auth';
 
 export const partnerRoute = new Hono()
 
-partnerRoute.get('/me', jwt({secret: JWT_PUBLIC, alg: "RS256"}), isAuthorized(PERMISSIONS.READ), async (c) => {
+partnerRoute.get('/me', isAuthenticated(), isAuthorized(PERMISSIONS.READ), async (c) => {
     const payload = c.get('jwtPayload');
     const partner = await PartnerService.getInfo(payload._id);
     if(!partner) return c.json(ERROR_MSG.NOT_VALID, HttpStatusCode.NOT_FOUND) 
@@ -35,7 +32,7 @@ partnerRoute.post('/login', jsonValidator(loginSchema), async (c) => {
     return c.json({partner, accessToken: token}, HttpStatusCode.ACCEPTED)
 })
 
-partnerRoute.put('/me', jwt({secret: JWT_PUBLIC, alg: "RS256"}), isAuthorized(PERMISSIONS.WRITE), jsonValidator(updateSchema), async (c) => {
+partnerRoute.put('/me', isAuthenticated(), isAuthorized(PERMISSIONS.WRITE), jsonValidator(updateSchema), async (c) => {
     const payload = c.get('jwtPayload');
     const newData = await c.req.json()
     const partner = await PartnerService.update(payload._id, newData);
@@ -43,7 +40,7 @@ partnerRoute.put('/me', jwt({secret: JWT_PUBLIC, alg: "RS256"}), isAuthorized(PE
     return c.json(partner, HttpStatusCode.ACCEPTED)
 })
 
-partnerRoute.delete('/me', jwt({secret: JWT_PUBLIC, alg: "RS256"}), isAuthorized(PERMISSIONS.WRITE), async (c) => {
+partnerRoute.delete('/me', isAuthenticated(), isAuthorized(PERMISSIONS.WRITE), async (c) => {
     const payload = c.get('jwtPayload');
     const partner = await PartnerService.delete(payload._id);
     if(!partner) return c.json(ERROR_MSG.NOT_VALID, HttpStatusCode.NOT_ACCEPTABLE)

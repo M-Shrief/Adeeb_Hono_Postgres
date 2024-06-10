@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { sign, verify } from 'hono/jwt'
+import { jwt, sign, verify } from 'hono/jwt'
 import { createMiddleware } from 'hono/factory'
 // 
 import { JWT_PRIVATE, JWT_PUBLIC } from '../config';
@@ -25,13 +25,7 @@ export const signToken = async (user: any) => {
   )
 }
 
-export const verifyToken = (token: string) => {
-  return verify(
-    token,
-    JWT_PUBLIC,
-    "RS256"
-  )
-}
+export const isAuthenticated = () => jwt({secret: JWT_PUBLIC, alg: "RS256"})
 
 export const isAuthorized = (permission: string) => createMiddleware(async (c, next) => {
   const permissions = c.get('jwtPayload').permissions as string[]
