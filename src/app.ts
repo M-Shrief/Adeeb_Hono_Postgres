@@ -13,6 +13,7 @@ import { poemRoute } from './components/poem/route';
 import { proseRoute } from './components/prose/route';
 import { chosenVerseRoute } from './components/chosenVerse/route';
 import { partnerRoute } from './components/partner/route';
+import { orderRoute } from './components/order/route';
 // Utils
 import HttpStatusCode from './utils/httpStatusCode';
 
@@ -33,6 +34,7 @@ app.route('/api/poems', poemRoute);
 app.route('/api/proses', proseRoute);
 app.route('/api/chosenverses', chosenVerseRoute);
 app.route('/api/partner', partnerRoute);
+app.route('/api/orders', orderRoute);
 
 // ...
 
