@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt';
-import { JWT_PRIVATE, JWT_PUBLIC } from '../config';
 import { sign, verify } from 'hono/jwt'
+import { createMiddleware } from 'hono/factory'
+// 
+import { JWT_PRIVATE, JWT_PUBLIC } from '../config';
+import HttpStatusCode from './httpStatusCode';
 
 export const hashPassword = async (password: string) => {
   const salt = bcrypt.genSaltSync(); // default 10
@@ -29,3 +32,9 @@ export const verifyToken = (token: string) => {
     "RS256"
   )
 }
+
+export const isAuthorized = (permission: string) => createMiddleware(async (c, next) => {
+  const permissions = c.get('jwtPayload').permissions as string[]
+  if (!permissions || permissions.includes(permission) == false) return c.json('Not Authorized', HttpStatusCode.UNAUTHORIZED)
+  await next()
+})
