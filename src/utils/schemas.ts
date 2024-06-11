@@ -1,4 +1,4 @@
-import { array, length, maxLength, minLength, object, pipe, string, trim } from 'valibot';
+import { array, boolean, fallback, length, maxLength, minLength, object, pipe, string, trim } from 'valibot';
 
 export const nameSchema = pipe(string(), trim(), minLength(4), maxLength(50));
 
@@ -11,4 +11,6 @@ export const versesSchema = array(
   }
 ))
 
-export const tagsSchema = pipe(string(), trim(), minLength(4), maxLength(50))
+export const tagsSchema = pipe(string(), trim(), minLength(4), maxLength(50));
+
+export const reviewedSchema = fallback(boolean(), false);

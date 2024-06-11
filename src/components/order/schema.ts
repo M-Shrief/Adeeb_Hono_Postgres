@@ -8,12 +8,13 @@ import {
     minLength,
     boolean,
     array,
+    fallback
 } from 'valibot';
 // other components
 import { qouteSchema } from '../prose/schema';
-// Utils
-import { idSchema, nameSchema, versesSchema} from '../../utils/schemas';
 import { phoneSchema } from '../partner/schema';
+// Utils
+import { idSchema, nameSchema, reviewedSchema, versesSchema} from '../../utils/schemas';
 
 const customizationSchema = pipe(string(), minLength(1), maxLength(10));
 const printSchema = object({
@@ -32,6 +33,7 @@ const productsSchema = array(object({
 }))
 
 const addressSchema = pipe(string(), trim(), minLength(4), maxLength(50))
+const completedSchema = fallback(boolean(), false);
 
 export const createSchema = object({
     partner: optional(idSchema),
@@ -39,8 +41,8 @@ export const createSchema = object({
     phone: phoneSchema,
     address: addressSchema,
     products: productsSchema,
-    reviewed: boolean(),
-    completed: boolean()
+    reviewed: reviewedSchema,
+    completed: completedSchema
 })
 
 export const updateSchema = object({
@@ -49,6 +51,6 @@ export const updateSchema = object({
     phone: optional(phoneSchema),
     address: optional(addressSchema),
     products: optional(productsSchema),
-    reviewed: optional(boolean()),
-    completed: optional(boolean())
+    reviewed: optional(reviewedSchema),
+    completed: optional(completedSchema)
 })

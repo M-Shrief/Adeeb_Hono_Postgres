@@ -39,6 +39,42 @@ export const PoetDB = {
           ]
         },
       },
+      {
+        $lookup: {
+          from: "proses",
+          localField: "_id",
+          foreignField: "poet",
+          as: "proses",
+          pipeline: [
+            {
+              $unset: [
+                "poet",
+                "reviewed",
+                "createdAt",
+                "updatedAt"
+              ]
+            },      
+          ]        
+        },
+      },
+      {
+        $lookup: {
+          from: "chosenverses",
+          localField: "_id",
+          foreignField: "poet",
+          as: "chosenVerses",
+          pipeline: [
+            {
+              $unset: [
+                "poet",
+                "reviewed",
+                "createdAt",
+                "updatedAt"
+              ]
+            },      
+          ]       
+        },
+      },
     ])
     if(poet.length == 0) return null
     return poet[0];
