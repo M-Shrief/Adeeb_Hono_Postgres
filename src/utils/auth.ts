@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { jwt, sign, verify } from 'hono/jwt'
+import { jwt, sign } from 'hono/jwt'
 import { createMiddleware } from 'hono/factory'
 // 
 import { JWT_PRIVATE, JWT_PUBLIC } from '../config';
