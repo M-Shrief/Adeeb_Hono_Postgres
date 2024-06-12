@@ -1,5 +1,5 @@
-import { HTTPException } from "hono/http-exception";
-import { StatusCode } from "hono/utils/http-status";
+import { HTTPException } from 'hono/http-exception';
+import { StatusCode } from 'hono/utils/http-status';
 
 export class AppError extends HTTPException {
   public readonly isOperational: boolean;

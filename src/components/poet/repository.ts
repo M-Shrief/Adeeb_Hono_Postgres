@@ -1,7 +1,7 @@
 import { Poet } from './model';
 import { cacheClient } from '../../cache';
 import { PoetType } from './interface';
-import {  Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 export const PoetDB = {
   async getAll(): Promise<PoetType[]> {
@@ -14,69 +14,49 @@ export const PoetDB = {
         $match: { _id: new Types.ObjectId(id) },
       },
       {
-        $unset: [
-          "reviewed",
-          "createdAt",
-          "updatedAt"
-        ]
+        $unset: ['reviewed', 'createdAt', 'updatedAt'],
       },
       {
         $lookup: {
-          from: "poems",
-          localField: "_id",
-          foreignField: "poet",
-          as: "poems",
+          from: 'poems',
+          localField: '_id',
+          foreignField: 'poet',
+          as: 'poems',
           pipeline: [
             {
-              $unset: [
-                "poet",
-                "verses",
-                "reviewed",
-                "createdAt",
-                "updatedAt"
-              ]
-            },      
-          ]
+              $unset: ['poet', 'verses', 'reviewed', 'createdAt', 'updatedAt'],
+            },
+          ],
         },
       },
       {
         $lookup: {
-          from: "proses",
-          localField: "_id",
-          foreignField: "poet",
-          as: "proses",
+          from: 'proses',
+          localField: '_id',
+          foreignField: 'poet',
+          as: 'proses',
           pipeline: [
             {
-              $unset: [
-                "poet",
-                "reviewed",
-                "createdAt",
-                "updatedAt"
-              ]
-            },      
-          ]        
+              $unset: ['poet', 'reviewed', 'createdAt', 'updatedAt'],
+            },
+          ],
         },
       },
       {
         $lookup: {
-          from: "chosenverses",
-          localField: "_id",
-          foreignField: "poet",
-          as: "chosenVerses",
+          from: 'chosenverses',
+          localField: '_id',
+          foreignField: 'poet',
+          as: 'chosenVerses',
           pipeline: [
             {
-              $unset: [
-                "poet",
-                "reviewed",
-                "createdAt",
-                "updatedAt"
-              ]
-            },      
-          ]       
+              $unset: ['poet', 'reviewed', 'createdAt', 'updatedAt'],
+            },
+          ],
         },
       },
-    ])
-    if(poet.length == 0) return null
+    ]);
+    if (poet.length == 0) return null;
     return poet[0];
   },
 

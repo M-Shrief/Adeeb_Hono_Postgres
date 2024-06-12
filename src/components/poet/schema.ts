@@ -24,7 +24,7 @@ const timePeriod = [
 
 const TimePeriodSchema = picklist(timePeriod);
 
-const bioSchema = pipe(string(), trim(), minLength(4), maxLength(500))
+const bioSchema = pipe(string(), trim(), minLength(4), maxLength(500));
 
 export const createSchema = object({
   name: nameSchema,

@@ -11,6 +11,6 @@ export enum ERROR_MSG {
 }
 
 export enum PERMISSIONS {
-  READ = "partner:read",
-  WRITE = "partner:write"
+  READ = 'partner:read',
+  WRITE = 'partner:write',
 }

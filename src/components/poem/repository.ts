@@ -38,7 +38,7 @@ export const PoemDB = {
   },
 
   async update(id: string, poemData: PoemType): Promise<PoemType | null> {
-    return await Poem.findByIdAndUpdate(id, { $set: poemData }, {new: true});
+    return await Poem.findByIdAndUpdate(id, { $set: poemData }, { new: true });
   },
 
   async delete(id: string): Promise<PoemType | null> {

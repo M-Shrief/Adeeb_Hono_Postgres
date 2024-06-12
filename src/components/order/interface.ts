@@ -1,4 +1,4 @@
-import { VerseType } from "../../utils/types";
+import { VerseType } from '../../utils/types';
 
 export interface OrderType {
   _id: string;
@@ -19,21 +19,21 @@ export enum ERROR_MSG {
 }
 
 export interface Print {
-    _id?: string;
-    poem?: string;
-    verses?: VerseType[];
-    qoute?: string;
+  _id?: string;
+  poem?: string;
+  verses?: VerseType[];
+  qoute?: string;
 }
-  
+
 export interface Product {
-    print: Print;
-    fontType: string;
-    fontColor: string;
-    backgroundColor: string;
+  print: Print;
+  fontType: string;
+  fontColor: string;
+  backgroundColor: string;
 }
 export interface ProductGroup {
-    prints: Print[];
-    fontType: string;
-    fontColor: string;
-    backgroundColor: string;
+  prints: Print[];
+  fontType: string;
+  fontColor: string;
+  backgroundColor: string;
 }

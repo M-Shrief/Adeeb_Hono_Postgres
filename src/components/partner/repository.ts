@@ -23,7 +23,11 @@ export const PartnerDB = {
     id: string,
     partnerData: PartnerType,
   ): Promise<PartnerType | null> {
-    return await Partner.findByIdAndUpdate(id, { $set: partnerData }, {new: true});
+    return await Partner.findByIdAndUpdate(
+      id,
+      { $set: partnerData },
+      { new: true },
+    );
   },
 
   async delete(id: string): Promise<PartnerType | null> {

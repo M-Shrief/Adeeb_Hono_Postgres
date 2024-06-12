@@ -1,7 +1,6 @@
 import { ChosenVerseDB } from './repository';
 import { ChosenVerseType } from './interface';
 
-
 export const ChosenVerseService = {
   async getAllWithPoet(): Promise<ChosenVerseType[] | false> {
     const chosenVerses = await ChosenVerseDB.getAllWithPoet();
@@ -30,10 +29,12 @@ export const ChosenVerseService = {
     return newChosenVerse;
   },
 
-  async postMany(chosenVersesData: ChosenVerseType[]): Promise< ChosenVerseType[] | false> {
+  async postMany(
+    chosenVersesData: ChosenVerseType[],
+  ): Promise<ChosenVerseType[] | false> {
     const newChosenVerses = await ChosenVerseDB.postMany(chosenVersesData);
     if (newChosenVerses.length == 0) return false;
-    return newChosenVerses
+    return newChosenVerses;
   },
 
   async update(

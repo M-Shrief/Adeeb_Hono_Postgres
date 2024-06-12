@@ -57,9 +57,13 @@ export const ChosenVerseDB = {
     id: string,
     chosenVerseData: ChosenVerseType,
   ): Promise<ChosenVerseType | null> {
-    return await ChosenVerse.findByIdAndUpdate(id, {
-      $set: chosenVerseData,
-    }, {new: true});
+    return await ChosenVerse.findByIdAndUpdate(
+      id,
+      {
+        $set: chosenVerseData,
+      },
+      { new: true },
+    );
   },
 
   async delete(id: string): Promise<ChosenVerseType | null> {

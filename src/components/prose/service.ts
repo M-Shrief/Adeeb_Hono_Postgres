@@ -1,22 +1,22 @@
 // Component
-import {ProseDB} from './repository'
+import { ProseDB } from './repository';
 import { ProseType } from './interface';
 
 export const ProseService = {
   async getAllWithPoet(): Promise<ProseType[] | false> {
-    const proses = await ProseDB.getAllWithPoet()
+    const proses = await ProseDB.getAllWithPoet();
     if (proses.length === 0) return false;
     return proses;
   },
 
   async getRandomWithPoet(num: number): Promise<ProseType[] | false> {
-    const proses = await ProseDB.getRandomWithPoet(num)
+    const proses = await ProseDB.getRandomWithPoet(num);
     if (proses.length === 0) return false;
     return proses;
   },
 
   async getOneWithPoet(id: string): Promise<ProseType | false> {
-    const prose = await ProseDB.getOneWithPoet(id)
+    const prose = await ProseDB.getOneWithPoet(id);
     if (!prose) return false;
     return prose;
   },
@@ -27,9 +27,7 @@ export const ProseService = {
     return newProse;
   },
 
-  async postMany(
-    prosesData: ProseType[],
-  ): Promise< ProseType[] | false> {
+  async postMany(prosesData: ProseType[]): Promise<ProseType[] | false> {
     const newProses = await ProseDB.postMany(prosesData);
     if (newProses.length == 0) return false;
     return newProses;

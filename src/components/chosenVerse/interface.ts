@@ -3,7 +3,6 @@ import { PoemType } from '../poem/interface';
 // utils
 import { VerseType } from '../../utils/types';
 
-
 export interface ChosenVerseType {
   _id: string;
   poet: string | PoetType;

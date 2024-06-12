@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { OrderType, Product, ProductGroup  } from './interface';
+import { OrderType, Product, ProductGroup } from './interface';
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema(

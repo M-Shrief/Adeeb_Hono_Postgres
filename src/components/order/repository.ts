@@ -14,13 +14,12 @@ export const OrderDB = {
         completed: 1,
         products: 1,
         createdAt: 1,
-        partner: 1
+        partner: 1,
       },
       {
         sort: {
           createdAt: -1,
         },
-        
       },
     );
   },
@@ -61,7 +60,11 @@ export const OrderDB = {
   },
 
   async update(id: string, orderData: OrderType): Promise<OrderType | null> {
-    return await Order.findByIdAndUpdate(id, { $set: orderData }, {new: true});
+    return await Order.findByIdAndUpdate(
+      id,
+      { $set: orderData },
+      { new: true },
+    );
   },
 
   async delete(id: string): Promise<OrderType | null> {

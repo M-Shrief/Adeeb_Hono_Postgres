@@ -13,7 +13,7 @@ import { partnerRoute } from './components/partner/route';
 import { orderRoute } from './components/order/route';
 // Utils
 import HttpStatusCode from './utils/httpStatusCode';
-import {logger} from './utils/logger';
+import { logger } from './utils/logger';
 import { AppError } from './utils/error';
 
 export const app = new Hono();
@@ -38,19 +38,18 @@ app.route('/api/orders', orderRoute);
 // Error Handling
 app.onError((err, c) => {
   if (err instanceof AppError) {
-    logger.error(err.message)
-    return c.json({message: err.message}, err.status)
+    logger.error(err.message);
+    return c.json({ message: err.message }, err.status);
   } else {
     return process.exit(1);
   }
-})
-
+});
 
 process.on('unhandledRejection', (reason: Error) => {
   throw reason;
 });
 
 process.on('uncaughtException', async (error: Error) => {
-  logger.error(error)
+  logger.error(error);
   process.exit(1);
 });
