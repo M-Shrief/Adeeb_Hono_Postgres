@@ -6,23 +6,22 @@ import {
   trim,
   maxLength,
   minLength,
-  boolean,
 } from 'valibot';
 // Utils
-import { idSchema, reviewedSchema, versesSchema} from '../../utils/schemas';
+import { mongoIdSchema, reviewedSchema, versesSchema} from '../../utils/schemas';
 
 const introSchema = pipe(string(), trim(), minLength(4), maxLength(50));
 
 export const createSchema = object({
   intro: introSchema,
-  poet: idSchema,
+  poet: mongoIdSchema,
   verses: versesSchema,
   reviewed: reviewedSchema,
 })
 
 export const updateSchema = object({
   intro: optional(introSchema),
-  poet: optional(idSchema),
+  poet: optional(mongoIdSchema),
   verses: optional(versesSchema),
   reviewed: optional(reviewedSchema),
 })

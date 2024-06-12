@@ -14,12 +14,12 @@ import {
 import { qouteSchema } from '../prose/schema';
 import { phoneSchema } from '../partner/schema';
 // Utils
-import { idSchema, nameSchema, reviewedSchema, versesSchema} from '../../utils/schemas';
+import { mongoIdSchema, nameSchema, reviewedSchema, versesSchema} from '../../utils/schemas';
 
 const customizationSchema = pipe(string(), minLength(1), maxLength(10));
 const printSchema = object({
-    id: optional(idSchema),
-    poem: optional(idSchema),
+    id: optional(mongoIdSchema),
+    poem: optional(mongoIdSchema),
     verses: optional(versesSchema),
     qoute: optional(qouteSchema)
 })
@@ -36,7 +36,7 @@ const addressSchema = pipe(string(), trim(), minLength(4), maxLength(50))
 const completedSchema = fallback(boolean(), false);
 
 export const createSchema = object({
-    partner: optional(idSchema),
+    partner: optional(mongoIdSchema),
     name: nameSchema,
     phone: phoneSchema,
     address: addressSchema,
@@ -46,7 +46,7 @@ export const createSchema = object({
 })
 
 export const updateSchema = object({
-    partner: optional(idSchema),
+    partner: optional(mongoIdSchema),
     name: optional(nameSchema),
     phone: optional(phoneSchema),
     address: optional(addressSchema),

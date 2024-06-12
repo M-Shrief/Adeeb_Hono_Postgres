@@ -1,13 +1,11 @@
 import {
     pipe,
     optional,
-    picklist,
     object,
     string,
     trim,
     maxLength,
     minLength,
-    boolean,
   } from 'valibot';
 //   Utils
 import { nameSchema } from '../../utils/schemas';
