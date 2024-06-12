@@ -6,7 +6,7 @@ import { ERROR_MSG, PoemType } from './interface';
 import { createSchema, updateSchema } from './schema';
 // Utils
 import HttpStatusCode from '../../utils/httpStatusCode';
-import { idValidator, jsonValidator } from '../../utils/validators';
+import { idParamValidator, jsonValidator } from '../../utils/validators';
 
 export const poemRoute = new Hono();
 
@@ -16,7 +16,7 @@ poemRoute.get('/', async (c) => {
   return c.json(poems, HttpStatusCode.OK);
 });
 
-poemRoute.get('/:id', idValidator(), async (c) => {
+poemRoute.get('/:id', idParamValidator(), async (c) => {
   const poem = await PoemService.getOneWithPoet(c.req.param('id'));
   if(!poem) return c.json(ERROR_MSG.NOT_FOUND, HttpStatusCode.NOT_FOUND)
   return c.json(poem, HttpStatusCode.OK);
@@ -36,14 +36,14 @@ poemRoute.post('/many', jsonValidator(array(createSchema)), async (c) => {
   return c.json(newPoems, HttpStatusCode.CREATED);
 });
 
-poemRoute.put('/:id', idValidator(), jsonValidator(updateSchema), async (c) => {
+poemRoute.put('/:id', idParamValidator(), jsonValidator(updateSchema), async (c) => {
   const newData = await c.req.json();
   const newPoem = await PoemService.update(c.req.param('id'), newData);
   if (!newPoem) c.json(ERROR_MSG.NOT_VALID, HttpStatusCode.NOT_ACCEPTABLE);
   return c.json(newPoem, HttpStatusCode.ACCEPTED);
 });
 
-poemRoute.delete('/:id', idValidator(), async (c) => {
+poemRoute.delete('/:id', idParamValidator(), async (c) => {
   const deletedPoem = await PoemService.delete(c.req.param('id'));
   if (!deletedPoem) c.json(ERROR_MSG.NOT_FOUND, HttpStatusCode.NOT_ACCEPTABLE);
   return c.json(deletedPoem, HttpStatusCode.ACCEPTED);

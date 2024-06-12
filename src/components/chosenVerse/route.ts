@@ -6,7 +6,7 @@ import { ERROR_MSG, ChosenVerseType } from './interface';
 import { createSchema, updateSchema } from './schema';
 // Utils
 import HttpStatusCode from '../../utils/httpStatusCode';
-import { idValidator, jsonValidator } from '../../utils/validators';
+import { idParamValidator, jsonValidator } from '../../utils/validators';
 
 export const chosenVerseRoute = new Hono();
 
@@ -24,7 +24,7 @@ chosenVerseRoute.get('/random', async (c) => {
   return c.json(chosenVerses, HttpStatusCode.OK);
 });
 
-chosenVerseRoute.get('/:id', idValidator(), async (c) => {
+chosenVerseRoute.get('/:id', idParamValidator(), async (c) => {
   const chosenVerse = await ChosenVerseService.getOneWithPoet(c.req.param('id'));
   if(!chosenVerse) return c.json(ERROR_MSG.NOT_FOUND, HttpStatusCode.NOT_FOUND)
   return c.json(chosenVerse, HttpStatusCode.OK);
@@ -44,14 +44,14 @@ chosenVerseRoute.post('/many', jsonValidator(array(createSchema)), async (c) => 
   return c.json(newChosenVerses, HttpStatusCode.CREATED);
 });
 
-chosenVerseRoute.put('/:id', idValidator(), jsonValidator(updateSchema), async (c) => {
+chosenVerseRoute.put('/:id', idParamValidator(), jsonValidator(updateSchema), async (c) => {
   const newData = await c.req.json();
   const newChosenVerse = await ChosenVerseService.update(c.req.param('id'), newData);
   if (!newChosenVerse) c.json(ERROR_MSG.NOT_VALID, HttpStatusCode.NOT_ACCEPTABLE);
   return c.json(newChosenVerse, HttpStatusCode.ACCEPTED);
 });
 
-chosenVerseRoute.delete('/:id', idValidator(), async (c) => {
+chosenVerseRoute.delete('/:id', idParamValidator(), async (c) => {
   const deletedChosenVerse = await ChosenVerseService.delete(c.req.param('id'));
   if (!deletedChosenVerse) c.json(ERROR_MSG.NOT_FOUND, HttpStatusCode.NOT_ACCEPTABLE);
   return c.json(deletedChosenVerse, HttpStatusCode.ACCEPTED);

@@ -6,7 +6,7 @@ import { ERROR_MSG, ProseType } from './interface';
 import { createSchema, updateSchema } from './schema';
 // Utils
 import HttpStatusCode from '../../utils/httpStatusCode';
-import { idValidator, jsonValidator } from '../../utils/validators';
+import { idParamValidator, jsonValidator } from '../../utils/validators';
 
 export const proseRoute = new Hono();
 
@@ -24,7 +24,7 @@ proseRoute.get('/random', async (c) => {
   return c.json(proses, HttpStatusCode.OK);
 });
 
-proseRoute.get('/:id', idValidator(), async (c) => {
+proseRoute.get('/:id', idParamValidator(), async (c) => {
   const prose = await ProseService.getOneWithPoet(c.req.param('id'));
   if(!prose) return c.json(ERROR_MSG.NOT_FOUND, HttpStatusCode.NOT_FOUND)
   return c.json(prose, HttpStatusCode.OK);
@@ -44,14 +44,14 @@ proseRoute.post('/many', jsonValidator(array(createSchema)), async (c) => {
   return c.json(newProses, HttpStatusCode.CREATED);
 });
 
-proseRoute.put('/:id', idValidator(), jsonValidator(updateSchema), async (c) => {
+proseRoute.put('/:id', idParamValidator(), jsonValidator(updateSchema), async (c) => {
   const newData = await c.req.json();
   const newProse = await ProseService.update(c.req.param('id'), newData);
   if (!newProse) c.json(ERROR_MSG.NOT_VALID, HttpStatusCode.NOT_ACCEPTABLE);
   return c.json(newProse, HttpStatusCode.ACCEPTED);
 });
 
-proseRoute.delete('/:id', idValidator(), async (c) => {
+proseRoute.delete('/:id', idParamValidator(), async (c) => {
   const deletedProse = await ProseService.delete(c.req.param('id'));
   if (!deletedProse) c.json(ERROR_MSG.NOT_FOUND, HttpStatusCode.NOT_ACCEPTABLE);
   return c.json(deletedProse, HttpStatusCode.ACCEPTED);

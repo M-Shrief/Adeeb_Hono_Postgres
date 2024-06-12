@@ -4,16 +4,6 @@ import { flatten, object } from 'valibot';
 import { idSchema } from './schemas';
 import HttpStatusCode from './httpStatusCode';
 
-export const idValidator = () =>
-  vValidator('param', object({ id: idSchema }), (result, c) => {
-    if (!result.success) {
-      return c.json(
-        { success: result.success, errors: flatten(result.issues).nested },
-        HttpStatusCode.NOT_ACCEPTABLE,
-      );
-    }
-  });
-
 export const jsonValidator = (schema: any) => {
   return vValidator('json', schema, (result, c) => {
     if (!result.success) {
@@ -24,3 +14,15 @@ export const jsonValidator = (schema: any) => {
     }
   });
 };
+
+export const paramValidator = (schema: any) =>
+  vValidator('param', schema, (result, c) => {
+    if (!result.success) {
+      return c.json(
+        { success: result.success, errors: flatten(result.issues).nested },
+        HttpStatusCode.NOT_ACCEPTABLE,
+      );
+    }
+});
+
+export const idParamValidator = () => paramValidator(object({ id: idSchema }))

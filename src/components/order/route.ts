@@ -6,7 +6,7 @@ import { createSchema, updateSchema } from './schema';
 //
 import { PERMISSIONS } from '../partner/interface';
 // Utils
-import { jsonValidator } from '../../utils/validators';
+import { idParamValidator, jsonValidator } from '../../utils/validators';
 import HttpStatusCode from '../../utils/httpStatusCode';
 import { isAuthenticated, isAuthorized } from '../../utils/auth';
 
@@ -42,14 +42,14 @@ orderRoute.post('/partner', isAuthenticated(), isAuthorized(PERMISSIONS.WRITE), 
     return c.json(newOrder, HttpStatusCode.CREATED);
 })
 
-orderRoute.put('/:id', isAuthenticated(), isAuthorized(PERMISSIONS.WRITE), jsonValidator(updateSchema), async (c) => {
+orderRoute.put('/:id', idParamValidator(), isAuthenticated(), isAuthorized(PERMISSIONS.WRITE), jsonValidator(updateSchema), async (c) => {
     const newData = await c.req.json();
     const updatedOrder = await OrderService.update(c.req.param('id'), newData);
     if(!updatedOrder) return c.json(ERROR_MSG.NOT_VALID, HttpStatusCode.NOT_ACCEPTABLE);
     return c.json(updatedOrder, HttpStatusCode.ACCEPTED);
 })
 
-orderRoute.delete('/:id', isAuthenticated(), isAuthorized(PERMISSIONS.WRITE), async (c) => {
+orderRoute.delete('/:id', idParamValidator(), isAuthenticated(), isAuthorized(PERMISSIONS.WRITE), async (c) => {
     const deletedOrder = await OrderService.delete(c.req.param('id'));
     if(!deletedOrder) return c.json(ERROR_MSG.NOT_FOUND, HttpStatusCode.NOT_ACCEPTABLE);
     return c.json(deletedOrder, HttpStatusCode.ACCEPTED);
