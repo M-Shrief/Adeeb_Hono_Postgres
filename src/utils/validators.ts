@@ -1,28 +1,28 @@
 import { vValidator } from '@hono/valibot-validator';
 import { flatten, object } from 'valibot';
 // Utils
-import { idSchema } from './schemas';
+import { mongoIdSchema } from './schemas';
 import HttpStatusCode from './httpStatusCode';
 
-export const jsonValidator = (schema: any) => {
+export const jsonValidator = (schema: any, message?: string) => {
   return vValidator('json', schema, (result, c) => {
     if (!result.success) {
       return c.json(
-        { success: result.success, errors: flatten(result.issues).nested },
+        { message: message ?? "JSON validation error", errors: flatten(result.issues).nested },
         HttpStatusCode.NOT_ACCEPTABLE,
       );
     }
   });
 };
 
-export const paramValidator = (schema: any) =>
+export const paramValidator = (schema: any, message?: string) =>
   vValidator('param', schema, (result, c) => {
     if (!result.success) {
       return c.json(
-        { success: result.success, errors: flatten(result.issues).nested },
+        { message: message ?? "param validation error", errors: flatten(result.issues).nested },
         HttpStatusCode.NOT_ACCEPTABLE,
       );
     }
 });
 
-export const idParamValidator = () => paramValidator(object({ id: idSchema }))
+export const idParamValidator = () => paramValidator(object({ id: mongoIdSchema }), "Not Found")
