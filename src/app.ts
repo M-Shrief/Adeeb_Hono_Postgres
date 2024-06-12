@@ -1,12 +1,9 @@
 import { Hono } from 'hono';
 // Middleware
-import { logger } from 'hono/logger';
+import { logger as loggerMiddleware } from 'hono/logger';
 import { secureHeaders } from 'hono/secure-headers';
 import { cors } from 'hono/cors';
 import { compress } from 'hono/compress';
-// import { HTTPException } from 'hono/http-exception'
-// import { StatusCode } from 'hono/utils/http-status'
-
 // Routes
 import { poetRoute } from './components/poet/route';
 import { poemRoute } from './components/poem/route';
@@ -16,10 +13,12 @@ import { partnerRoute } from './components/partner/route';
 import { orderRoute } from './components/order/route';
 // Utils
 import HttpStatusCode from './utils/httpStatusCode';
+import {logger} from './utils/logger';
+import { AppError } from './utils/error';
 
 export const app = new Hono();
 
-app.use(logger());
+app.use(loggerMiddleware());
 app.use(secureHeaders());
 app.use(cors());
 app.use(compress());
@@ -36,26 +35,22 @@ app.route('/api/chosenverses', chosenVerseRoute);
 app.route('/api/partner', partnerRoute);
 app.route('/api/orders', orderRoute);
 
-// ...
+// Error Handling
+app.onError((err, c) => {
+  if (err instanceof AppError) {
+    logger.error(err.message)
+    return c.json({message: err.message}, err.status)
+  } else {
+    return process.exit(1);
+  }
+})
 
-// app.get('/error', async (c, next) => {
-//   const errorResponse = new Response('Unauthorized', {
-//     status: HttpStatusCode.UNAUTHORIZED,
-//     headers: {
-//       Authenticate: 'error="invalid_token"',
-//     },
-//   })
-//   throw new HTTPException(401, { res: errorResponse })
-// })
 
-// app.onError((err, c) => {
-//   if (err instanceof HTTPException) {
-//     const res = err.getResponse()
-//     c.status(res.status as StatusCode)
-//     return c.json(res)
-//   } else {
-//     c.status(400)
-//     return c.text("Error, try again later")
-//   }
+process.on('unhandledRejection', (reason: Error) => {
+  throw reason;
+});
 
-// })
+process.on('uncaughtException', async (error: Error) => {
+  logger.error(error)
+  process.exit(1);
+});
