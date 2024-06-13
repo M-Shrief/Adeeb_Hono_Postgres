@@ -1,4 +1,5 @@
 # REST API for "Adeeb أديب" backend.
+E-Commerce's  REST API backend for printing Arabic literature.
 
 ## Objectives
 
@@ -7,13 +8,21 @@
 - migrate [Adeeb's backend](https://github.com/M-Shrief/Adeeb_ExpressTS) to use Hono instead of Express. 
 
 ## Overview
-It's concerned with Arabic literature. It assumes a business model that enables you to order a specific piece of literature to be printed with especial colors and font. Then it'll be delivered to the customer, with the ability for the customer to follow up the process. And for special customers, it provides them with the ability to make bulk orders fast and easy. And if they’re willing to signup, they can review all of their past orders.
 
 - Tech stack:
-
   - Full **TypeScript**
   - **Nodejs** & **Hono**
   - Database:
     - **MongoDB** & **Mongoose**
     - Caching with ~~Redis~~ **ValKey**
   - **Docker** Containerization
+
+- characteristics:
+  - Regression tests with Vitest.
+  - CI using Github actions for testing
+  - JWT Authentication & Authorization
+  - Error Handling
+  - Data Validation with valibot
+  - Security best practices from OWASP
+  - …and more
+ 
