@@ -1,7 +1,8 @@
+import { Types } from 'mongoose';
+// Component
 import { Poet } from './model';
 import { cacheClient } from '../../cache';
 import { PoetType } from './interface';
-import { Types } from 'mongoose';
 
 export const PoetDB = {
   async getAll(): Promise<PoetType[]> {

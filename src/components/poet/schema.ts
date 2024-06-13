@@ -7,10 +7,9 @@ import {
   trim,
   maxLength,
   minLength,
-  boolean,
 } from 'valibot';
 // utils
-import { nameSchema } from '../../utils/schemas';
+import { nameSchema, reviewedSchema } from '../../utils/schemas';
 
 const timePeriod = [
   'جاهلي',
@@ -30,12 +29,12 @@ export const createSchema = object({
   name: nameSchema,
   time_period: TimePeriodSchema,
   bio: bioSchema,
-  reviewed: boolean(),
+  reviewed: reviewedSchema,
 });
 
 export const updateSchema = object({
   name: optional(nameSchema),
   time_period: optional(TimePeriodSchema),
   bio: optional(bioSchema),
-  reviewed: optional(boolean()),
+  reviewed: optional(reviewedSchema),
 });
