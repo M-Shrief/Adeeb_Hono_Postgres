@@ -4,8 +4,8 @@ import { PoemDB, PoemRedis } from './repository';
 import { PoemType } from './interface';
 
 export const PoemService = {
-  async getAllWithPoetName(): Promise<PoemType[] | false> {
-    const poets = await PoemDB.getAllWithPoetName();
+  async getAllWithPoet(): Promise<PoemType[] | false> {
+    const poets = await PoemDB.getAllWithPoet();
     if (poets.length === 0) return false;
     return poets;
   },

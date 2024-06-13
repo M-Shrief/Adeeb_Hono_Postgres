@@ -11,7 +11,7 @@ import { idParamValidator, jsonValidator } from '../../utils/validators';
 export const poemRoute = new Hono();
 
 poemRoute.get('/', async (c) => {
-  const poems = await PoemService.getAllWithPoetName();
+  const poems = await PoemService.getAllWithPoet();
   if (!poems)
     return c.json(
       { message: ERROR_MSG.NOT_AVAILABLE },

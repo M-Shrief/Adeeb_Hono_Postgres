@@ -1,12 +1,9 @@
 import { Poem } from './model';
 import { cacheClient } from '../../cache';
 import { PoemType } from './interface';
-import { set } from 'mongoose';
-import { Poet } from '../poet/model';
-import { PoetService } from '../poet/service';
 
 export const PoemDB = {
-  async getAllWithPoetName(): Promise<PoemType[]> {
+  async getAllWithPoet(): Promise<PoemType[]> {
     return await Poem.find({}, { intro: 1, poet: 1, reviewed: 1 }).populate(
       'poet',
       'name',
