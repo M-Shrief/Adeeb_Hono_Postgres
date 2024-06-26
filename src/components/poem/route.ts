@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { array } from 'valibot';
 // Component
 import { PoemService } from './service';
-import { ERROR_MSG, PoemType } from './interface';
+import { ERROR_MSG } from './interface';
 import { createSchema, updateSchema } from './schema';
 // Utils
 import HttpStatusCode from '../../utils/httpStatusCode';
@@ -29,7 +29,7 @@ poemRoute.get('/:id', idParamValidator(), async (c) => {
 
 poemRoute.post('/', jsonValidator(createSchema), async (c) => {
   const poemData = await c.req.json();
-  const newPoem = await PoemService.post(poemData as PoemType);
+  const newPoem = await PoemService.post(poemData);
   if (!newPoem)
     c.json({ message: ERROR_MSG.NOT_VALID }, HttpStatusCode.NOT_ACCEPTABLE);
   return c.json(newPoem, HttpStatusCode.CREATED);
@@ -52,7 +52,7 @@ poemRoute.put(
     const newPoem = await PoemService.update(c.req.param('id'), newData);
     if (!newPoem)
       c.json({ message: ERROR_MSG.NOT_VALID }, HttpStatusCode.NOT_ACCEPTABLE);
-    return c.json(newPoem, HttpStatusCode.ACCEPTED);
+    return c.json({}, HttpStatusCode.ACCEPTED);
   },
 );
 
@@ -60,5 +60,5 @@ poemRoute.delete('/:id', idParamValidator(), async (c) => {
   const deletedPoem = await PoemService.delete(c.req.param('id'));
   if (!deletedPoem)
     c.json({ message: ERROR_MSG.NOT_FOUND }, HttpStatusCode.NOT_ACCEPTABLE);
-  return c.json(deletedPoem, HttpStatusCode.ACCEPTED);
+  return c.json({}, HttpStatusCode.ACCEPTED);
 });

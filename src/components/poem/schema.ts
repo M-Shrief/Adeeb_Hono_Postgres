@@ -9,7 +9,7 @@ import {
 } from 'valibot';
 // Utils
 import {
-  mongoIdSchema,
+  uuidSchema,
   reviewedSchema,
   versesSchema,
 } from '../../utils/schemas';
@@ -18,14 +18,14 @@ const introSchema = pipe(string(), trim(), minLength(4), maxLength(50));
 
 export const createSchema = object({
   intro: introSchema,
-  poet: mongoIdSchema,
+  poet: uuidSchema,
   verses: versesSchema,
   reviewed: reviewedSchema,
 });
 
 export const updateSchema = object({
   intro: optional(introSchema),
-  poet: optional(mongoIdSchema),
+  poet: optional(uuidSchema),
   verses: optional(versesSchema),
   reviewed: optional(reviewedSchema),
 });
