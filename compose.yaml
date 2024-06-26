@@ -1,7 +1,7 @@
 # This service is built from the Dockerfile in the current directory.
 services:
   server:
-    container_name: adeeb_hono
+    container_name: adeeb_hono_postgres
     build:
       context: .
     restart: unless-stopped
@@ -24,18 +24,18 @@ services:
 
   db:
     # Container name is used as ${host} when connecting to database
-    container_name: adeeb_mongo
-    image: mongo:7-jammy
+    container_name: adeeb_db
+    image: postgres: 16.3-alpine
     restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: adeeb
-      MONGO_INITDB_ROOT_PASSWORD: mongodb
-      MONGO_INITDB_DATABASE: adeeb_db
+    # Use db-data volume to persist Database on restarts
     volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - db-data:/data/db
+      - db-data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: adeeb_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - 27017
+      - 5432:5432
 
   redis:
     container_name: adeeb_cache
