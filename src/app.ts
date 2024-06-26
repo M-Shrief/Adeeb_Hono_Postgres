@@ -8,7 +8,7 @@ import { compress } from 'hono/compress';
 import { poetRoute } from './components/poet/route';
 import { poemRoute } from './components/poem/route';
 // import { proseRoute } from './components/prose/route';
-// import { chosenVerseRoute } from './components/chosenVerse/route';
+import { chosenVerseRoute } from './components/chosenVerse/route';
 // import { partnerRoute } from './components/partner/route';
 // import { orderRoute } from './components/order/route';
 // Utils
@@ -31,7 +31,7 @@ app.get('/', (c) => {
 app.route('/api/poets', poetRoute);
 app.route('/api/poems', poemRoute);
 // app.route('/api/proses', proseRoute);
-// app.route('/api/chosenverses', chosenVerseRoute);
+app.route('/api/chosenverses', chosenVerseRoute);
 // app.route('/api/partner', partnerRoute);
 // app.route('/api/orders', orderRoute);
 
