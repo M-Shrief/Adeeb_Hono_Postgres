@@ -4,9 +4,17 @@ import { logger } from '../utils/logger';
 
 export const { NODE_ENV, PORT, LOG_DIR, CACHE_URL, CORS_ORIGIN } = process.env;
 
-const { DB_CONTAINER, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
-
-export const DB_URL = `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_CONTAINER}:${DB_PORT}/${DB_NAME}`;
+/**
+ * Database config
+ */
+export const DB = {
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  name: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  ca: process.env.CA_CERTIFICATE,
+};
 
 export let JWT_PRIVATE: string = '';
 export let JWT_PUBLIC: string = '';
