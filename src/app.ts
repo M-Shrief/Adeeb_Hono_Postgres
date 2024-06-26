@@ -6,11 +6,11 @@ import { cors } from 'hono/cors';
 import { compress } from 'hono/compress';
 // Routes
 import { poetRoute } from './components/poet/route';
-import { poemRoute } from './components/poem/route';
-import { proseRoute } from './components/prose/route';
-import { chosenVerseRoute } from './components/chosenVerse/route';
-import { partnerRoute } from './components/partner/route';
-import { orderRoute } from './components/order/route';
+// import { poemRoute } from './components/poem/route';
+// import { proseRoute } from './components/prose/route';
+// import { chosenVerseRoute } from './components/chosenVerse/route';
+// import { partnerRoute } from './components/partner/route';
+// import { orderRoute } from './components/order/route';
 // Utils
 import HttpStatusCode from './utils/httpStatusCode';
 import { logger } from './utils/logger';
@@ -29,11 +29,11 @@ app.get('/', (c) => {
 });
 
 app.route('/api/poets', poetRoute);
-app.route('/api/poems', poemRoute);
-app.route('/api/proses', proseRoute);
-app.route('/api/chosenverses', chosenVerseRoute);
-app.route('/api/partner', partnerRoute);
-app.route('/api/orders', orderRoute);
+// app.route('/api/poems', poemRoute);
+// app.route('/api/proses', proseRoute);
+// app.route('/api/chosenverses', chosenVerseRoute);
+// app.route('/api/partner', partnerRoute);
+// app.route('/api/orders', orderRoute);
 
 // Error Handling
 app.onError((err, c) => {

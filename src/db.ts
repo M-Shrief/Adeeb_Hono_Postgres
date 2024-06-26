@@ -1,48 +1,61 @@
-import mongoose from 'mongoose';
-// config
-import { DB_URL } from './config/index';
+import { DataSource } from 'typeorm';
+// Config
+import { DB } from './config';
+// Entities
+import { Poet } from './components/poet/entity';
 // Utils
 import { logger } from './utils/logger';
 
-mongoose.set('strictQuery', true);
+/**
+ * Used to access the Database in components repository.
+ *
+ * ```ts
+ * const db = AppDataSource.getRepository(entity);
+ * ....
+ * db.find();
+ * ```
+ */
+export const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: DB.host,
+  port: Number(DB.port),
+  username: DB.user,
+  password: DB.password,
+  database: DB.name,
+  ssl: DB.ca
+    ? {
+        rejectUnauthorized: false,
+        ca: DB.ca,
+      }
+    : false,
+  synchronize: true,
+  logging: true,
+  entities: [Poet],
+  migrations: [],
+  subscribers: [],
+});
 
-// Create the database connection
-const options = {
-  // autoIndex: true,
-  minPoolSize: 5, // Maintain up to x socket connections
-  maxPoolSize: 10, // Maintain up to x socket connections
-  connectTimeoutMS: 10 * 1000, // Give up initial connection after 10 seconds
-  // socketTimeoutMS: 45 * 1000, // Close sockets after 45 seconds of inactivity
+/**
+ * Used to initialize Database connection on Adeeb entry: src/index.ts
+ */
+export const connectDB = async () => {
+  try {
+    await AppDataSource.initialize();
+    logger.info(`Connected To Postgres database correctly, Host: ${DB.host}`);
+  } catch (error) {
+    logger.error('Failed to connect to database');
+    process.exit(1);
+  }
 };
-export const connectDB = async () => await mongoose.connect(DB_URL, options);
 
-// CONNECTION EVENTS
-// When successfully connected
-mongoose.connection.on('connected', () => {
-  logger.info('Mongoose default connection open to: ' + DB_URL);
-});
-
-// If the connection throws an error
-mongoose.connection.on('error', (err) => {
-  logger.error(`can't connect to: ${DB_URL}`);
-  logger.error('error: ' + err);
-  // exit(1) to have PM2 start it again
-  process.exit(1);
-});
-
-// When the connection is disconnected
-mongoose.connection.on('disconnected', () => {
-  logger.info('Mongoose default connection disconnected');
-});
-
-// If the Node process ends, close the Mongoose connection
+/**
+ *  If the Node process ends, close the postgres connection
+ */
 process.on('SIGINT', async () => {
-  await mongoose.connection.close(true);
+  await AppDataSource.destroy().catch((err) => logger.error(`${err}`));
   logger.info(
-    'Mongoose default connection disconnected through app termination',
+    'Postgres default connection disconnected through app termination',
   );
 
   process.exit(0);
 });
-
-export const connection = mongoose.connection;
