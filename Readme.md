@@ -1,11 +1,11 @@
-# REST API for "Adeeb أديب" backend.
-E-Commerce's  REST API backend for printing Arabic literature.
+# "Adeeb أديب"'s Backend.
+E-Commerce for printing Arabic Literature. Using SSR frontend with REST API, gRPC API and Protocol Buffers.
 
 ## Objectives
 
 - Get back my flow with JavaScript and TypeScript.
 - Take another look on my code's design, structure...etc
-- migrate [Adeeb's backend](https://github.com/M-Shrief/Adeeb_ExpressTS) to use Hono instead of Express. 
+- migrate [Adeeb's backend](https://github.com/M-Shrief/Adeeb_ExpressTS_Postgres) to use Hono instead of Express. 
 
 ## Overview
 
@@ -13,7 +13,7 @@ E-Commerce's  REST API backend for printing Arabic literature.
   - Full **TypeScript**
   - **Nodejs** & **Hono**
   - Database:
-    - **MongoDB** & **Mongoose**
+    - **Postgres** and **TypeORM**
     - Caching with ~~Redis~~ **ValKey**
   - **Docker** Containerization
 
