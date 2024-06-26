@@ -1,23 +1,23 @@
 import { optional, object } from 'valibot';
 // Utils
 import {
-  mongoIdSchema,
+  uuidSchema,
   versesSchema,
   tagsSchema,
   reviewedSchema,
 } from '../../utils/schemas';
 
 export const createSchema = object({
-  poet: mongoIdSchema,
-  poem: mongoIdSchema,
+  poet: uuidSchema,
+  poem: uuidSchema,
   verses: versesSchema,
   tags: tagsSchema,
   reviewed: reviewedSchema,
 });
 
 export const updateSchema = object({
-  poet: optional(mongoIdSchema),
-  poem: optional(mongoIdSchema),
+  poet: optional(uuidSchema),
+  poem: optional(uuidSchema),
   verses: optional(versesSchema),
   tags: optional(tagsSchema),
   reviewed: optional(reviewedSchema),
