@@ -1,72 +1,111 @@
-import { ChosenVerse } from './model';
-import { ChosenVerseType } from './interface';
+// Database
+import { AppDataSource } from '../../db';
+// Entities
+import { ChosenVerse } from './entity';
+// Types
+import { DeleteResult, UpdateResult } from 'typeorm';
 
+const db = AppDataSource.getRepository(ChosenVerse);
+
+/**
+ * Used to access Database's ChosenVerse repository.
+ */
 export const ChosenVerseDB = {
-  async getAllWithPoet(): Promise<ChosenVerseType[]> {
-    return await ChosenVerse.find(
-      {},
-      { reviewed: 1, tags: 1, verses: 1, poet: 1, poem: 1 },
-    ).populate('poet', 'name');
-  },
-
-  async getRandomWithPoet(num: number): Promise<ChosenVerseType[]> {
-    return await ChosenVerse.aggregate([
-      { $sample: { size: num } },
-      {
-        $unset: [
-          'updatedAt',
-          'createdAt',
-          'tags',
-          'poet',
-          'poem',
-          'reviewed',
-          '__v',
-        ],
+  /**
+   * Returns an array of ChosenVerses with the poet name
+   * @returns
+   */
+  async getAllWithPoet(): Promise<ChosenVerse[]> {
+    return await db.find({
+      select: {
+        id: true,
+        poet: {
+          id: true,
+          name: true,
+        },
+        poem: {
+          id: true,
+        },
+        tags: true,
+        verses: true,
+        reviewed: true,
       },
-    ]);
-  },
-
-  async getOneWithPoet(id: string): Promise<ChosenVerseType | null> {
-    return await ChosenVerse.findById(id, {
-      reviewed: 1,
-      tags: 1,
-      verses: 1,
-      poet: 1,
-      poem: 1,
-    }).populate('poet', 'name');
-  },
-
-  async post(chosenVerseData: ChosenVerseType): Promise<ChosenVerseType> {
-    const chosenVerse = new ChosenVerse({
-      poet: chosenVerseData.poet,
-      poem: chosenVerseData.poem,
-      tags: chosenVerseData.tags,
-      verses: chosenVerseData.verses,
-      reviewed: chosenVerseData.reviewed,
+      relations: { poet: true, poem: true },
+      cache: true,
     });
-    return await chosenVerse.save();
   },
-
-  async postMany(
-    chosenVersesData: ChosenVerseType[],
-  ): Promise<ChosenVerseType[]> {
-    return await ChosenVerse.insertMany(chosenVersesData);
+  /**
+   * Returns a random array of ChosenVerses' with the poet name, with a specified length
+   * @returns
+   */
+  async getRandomWithPoet(num: number): Promise<ChosenVerse[]> {
+    return await db
+      .createQueryBuilder('chosenVerse')
+      .select(['chosenVerse.id', 'chosenVerse.verses'])
+      .orderBy('RANDOM()')
+      .limit(num)
+      .cache(false)
+      .getMany();
   },
-
+  /**
+   * Returns ChosenVerse data and its poet data
+   * @param {string} id - chosenVerse's id
+   * @returns
+   */
+  async getOneWithPoet(id: string): Promise<ChosenVerse | null> {
+    return await db.findOne({
+      where: { id },
+      select: {
+        id: true,
+        poet: {
+          id: true,
+          name: true,
+        },
+        poem: {
+          id: true,
+        },
+        tags: true,
+        verses: true,
+        reviewed: true,
+      },
+      relations: { poet: true, poem: true },
+      cache: true,
+    });
+  },
+  /**
+   * Create a new ChosenVerse
+   * @param {ChosenVerse} chosenVerseData - ChosenVerse's data
+   * @returns
+   */
+  async post(chosenVerseData: ChosenVerse): Promise<ChosenVerse> {
+    return await db.save(chosenVerseData);
+  },
+  /**
+   * Create new ChosenVerses
+   * @param {ChosenVerse[]} chosenVersesData - ChosenVerse's data
+   * @returns
+   */
+  async postMany(chosenVersesData: ChosenVerse[]): Promise<ChosenVerse[]> {
+    return await db.save(chosenVersesData);
+  },
+  /**
+   * Update a ChosenVerse
+   * @param {string} id - ChosenVerse's id
+   * @param {ChosenVerse} chosenVerseData - ChosenVerse's data
+   * @returns
+   */
   async update(
     id: string,
-    chosenVerseData: ChosenVerseType,
-  ): Promise<ChosenVerseType | null> {
-    return await ChosenVerse.findByIdAndUpdate(
-      id,
-      {
-        $set: chosenVerseData,
-      },
-      { new: true },
-    );
+    chosenVerseData: ChosenVerse,
+  ): Promise<UpdateResult> {
+    return await db.update(id, chosenVerseData);
   },
-
-  async delete(id: string): Promise<ChosenVerseType | null> {
-    return await ChosenVerse.findByIdAndDelete(id);
+  /**
+   * Delete a ChosenVerse
+   * @param {string} id - ChosenVerse's id
+   * @returns
+   */
+  async delete(id: string): Promise<DeleteResult> {
+    return await db.delete(id);
   },
 };
