@@ -1,7 +1,7 @@
 import { vValidator } from '@hono/valibot-validator';
 import { flatten, object } from 'valibot';
 // Utils
-import { mongoIdSchema } from './schemas';
+import { uuidSchema } from './schemas';
 import HttpStatusCode from './httpStatusCode';
 
 export const jsonValidator = (schema: any, message?: string) => {
@@ -32,4 +32,4 @@ export const paramValidator = (schema: any, message?: string) =>
   });
 
 export const idParamValidator = () =>
-  paramValidator(object({ id: mongoIdSchema }), 'Not Found');
+  paramValidator(object({ id: uuidSchema }), 'Not Found');
