@@ -1,5 +1,5 @@
 {
-  "name": "adeeb_hono",
+  "name": "adeeb_hono_postgres",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
@@ -32,7 +32,9 @@
     "bcrypt": "^5.1.1",
     "hono": "^4.4.3",
     "iovalkey": "^0.0.1",
-    "mongoose": "^8.4.1",
+    "pg": "^8.11.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.3.16",
     "valibot": "^0.31.0",
     "winston": "^3.13.0"
   }
