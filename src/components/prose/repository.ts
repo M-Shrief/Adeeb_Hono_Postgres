@@ -1,57 +1,101 @@
-// Component
-import { Prose } from './model';
-import { ProseType } from './interface';
+// Database
+import { AppDataSource } from '../../db';
+// Entities
+import { Prose } from './entity';
+// Types
+import { UpdateResult, DeleteResult } from 'typeorm';
 
+const db = AppDataSource.getRepository(Prose);
+
+/**
+ * Used to access Database's Prose repository.
+ */
 export const ProseDB = {
-  async getAllWithPoet(): Promise<ProseType[]> {
-    return await Prose.find(
-      {},
-      { poet: 1, tags: 1, qoute: 1, reviewed: 1 },
-    ).populate('poet', 'name');
-  },
-
-  async getRandomWithPoet(num: number): Promise<ProseType[]> {
-    return await Prose.aggregate([
-      { $sample: { size: num } },
-      {
-        $unset: ['updatedAt', 'createdAt', 'tags', 'poet', 'reviewed', '__v'],
+  /**
+   * Returns an array of Proses with the poet name
+   * @returns
+   */
+  async getAllWithPoet(): Promise<Prose[]> {
+    return await db.find({
+      select: {
+        id: true,
+        poet: {
+          id: true,
+          name: true,
+        },
+        tags: true,
+        qoute: true,
+        reviewed: true,
       },
-    ]);
-  },
-
-  async getOneWithPoet(id: string): Promise<ProseType | null> {
-    return await Prose.findById(id, {
-      poet: 1,
-      tags: 1,
-      qoute: 1,
-      reviewed: 1,
-    }).populate('poet', 'name');
-  },
-
-  async post(proseData: ProseType): Promise<ProseType> {
-    const prose = new Prose({
-      poet: proseData.poet,
-      tags: proseData.tags,
-      qoute: proseData.qoute,
-      reviewed: proseData.reviewed,
+      relations: { poet: true },
+      cache: true,
     });
-
-    return await prose.save();
   },
-
-  async postMany(prosesData: ProseType[]): Promise<ProseType[]> {
-    return await Prose.insertMany(prosesData);
+  /**
+   * Returns a random array of Proses' with the poet name, with a specified length
+   * @returns
+   */
+  async getRandomWithPoet(num: number): Promise<Prose[]> {
+    return await db
+      .createQueryBuilder('prose')
+      .select(['prose.id', 'prose.qoute'])
+      .orderBy('RANDOM()')
+      .limit(num)
+      .getMany();
   },
-
-  async update(id: string, proseData: ProseType): Promise<ProseType | null> {
-    return await Prose.findByIdAndUpdate(
-      id,
-      { $set: proseData },
-      { new: true },
-    );
+  /**
+   * Returns Prose data and its poet data
+   * @param {string} id - prose's id
+   * @returns
+   */
+  async getOneWithPoet(id: string): Promise<Prose | null> {
+    return await db.findOne({
+      where: { id },
+      select: {
+        id: true,
+        poet: {
+          id: true,
+          name: true,
+        },
+        tags: true,
+        qoute: true,
+        reviewed: true,
+      },
+      relations: { poet: true },
+      cache: true,
+    });
   },
-
-  async delete(id: string): Promise<ProseType | null> {
-    return await Prose.findByIdAndDelete(id);
+  /**
+   * Create a new Prose
+   * @param {Prose} proseData - prose's data
+   * @returns
+   */
+  async post(proseData: Prose): Promise<Prose> {
+    return await db.save(proseData);
+  },
+  /**
+   * Create new Proses
+   * @param {Prose[]} prosesData - prose's data
+   * @returns
+   */
+  async postMany(prosesData: Prose[]): Promise<Prose[]> {
+    return await db.save(prosesData);
+  },
+  /**
+   * Update a Prose
+   * @param {string} id - prose's id
+   * @param {Prose} proseData - prose's data
+   * @returns
+   */
+  async update(id: string, proseData: Prose): Promise<UpdateResult> {
+    return await db.update(id, proseData);
+  },
+  /**
+   * Delete a Prose
+   * @param {string} id - prose's id
+   * @returns
+   */
+  async delete(id: string): Promise<DeleteResult> {
+    return await db.delete(id);
   },
 };
