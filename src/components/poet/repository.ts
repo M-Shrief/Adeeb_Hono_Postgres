@@ -1,104 +1,141 @@
-import { Types } from 'mongoose';
-// Component
-import { Poet } from './model';
+import { UpdateResult, DeleteResult } from 'typeorm';
+import { Logger } from 'winston';
+// Database
+import { AppDataSource } from '../../db';
+// Entities
+import { Poet } from './entity';
+// Cache
 import { cacheClient } from '../../cache';
-import { PoetType } from './interface';
+// Utils
+import { logger } from '../../utils/logger';
 
+const db = AppDataSource.getRepository(Poet);
+
+/**
+ * Used to access Database's Poet repository.
+ */
 export const PoetDB = {
-  async getAll(): Promise<PoetType[]> {
-    return await Poet.find({});
-  },
-
-  async getOne(id: string): Promise<PoetType | null> {
-    const poet = await Poet.aggregate<PoetType>([
-      {
-        $match: { _id: new Types.ObjectId(id) },
+  /**
+   * Returns an array of Poet's data
+   * @returns
+   */
+  async getAll(): Promise<Poet[]> {
+    return await db.find({
+      select: {
+        id: true,
+        name: true,
+        time_period: true,
       },
-      {
-        $unset: ['reviewed', 'createdAt', 'updatedAt'],
-      },
-      {
-        $lookup: {
-          from: 'poems',
-          localField: '_id',
-          foreignField: 'poet',
-          as: 'poems',
-          pipeline: [
-            {
-              $unset: ['poet', 'verses', 'reviewed', 'createdAt', 'updatedAt'],
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: 'proses',
-          localField: '_id',
-          foreignField: 'poet',
-          as: 'proses',
-          pipeline: [
-            {
-              $unset: ['poet', 'reviewed', 'createdAt', 'updatedAt'],
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: 'chosenverses',
-          localField: '_id',
-          foreignField: 'poet',
-          as: 'chosenVerses',
-          pipeline: [
-            {
-              $unset: ['poet', 'reviewed', 'createdAt', 'updatedAt'],
-            },
-          ],
-        },
-      },
-    ]);
-    if (poet.length == 0) return null;
-    return poet[0];
-  },
-
-  async post(poetData: PoetType): Promise<PoetType> {
-    const poet = new Poet({
-      name: poetData.name,
-      time_period: poetData.time_period,
-      bio: poetData.bio,
-      reviewed: poetData.reviewed,
+      relations: { poems: false },
+      cache: true,
     });
-    return await poet.save();
   },
-
-  async postMany(poetsData: PoetType[]): Promise<PoetType[]> {
-    return await Poet.insertMany(poetsData);
+  /**
+   * Returns Poet data and literature (poems, chosenVerses, proses)
+   * @param {string} id - poet's id
+   * @returns
+   */
+  async getOne(id: string): Promise<Poet | null> {
+    return db.findOne({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        time_period: true,
+        bio: true,
+        poems: {
+          id: true,
+          intro: true,
+        },
+        chosenVerses: {
+          id: true,
+          poem: {
+            id: true,
+          },
+          verses: true,
+          tags: true,
+        },
+        proses: {
+          id: true,
+          qoute: true,
+          tags: true,
+        },
+      },
+      relations: ['poems', 'chosenVerses', 'chosenVerses.poem', 'proses'],
+      cache: 1000 * 5,
+    });
   },
-
-  async update(_id: string, poetData: PoetType): Promise<PoetType | null> {
-    return await Poet.findByIdAndUpdate(_id, { $set: poetData }, { new: true });
+  /**
+   * Create a Poet
+   * @param {Poet} poetData - poet's data
+   * @returns
+   */
+  async post(poetData: Poet): Promise<Poet> {
+    return await db.save(poetData);
   },
-
-  async delete(id: string): Promise<PoetType | null> {
-    return await Poet.findByIdAndDelete(id);
+  /**
+   * Create a Poets
+   * @param {Poet[]} poetsData - poets' data
+   * @returns
+   */
+  async postMany(poetsData: Poet[]): Promise<Poet[]> {
+    return await db.save(poetsData);
+  },
+  /**
+   * update a Poet data
+   * @param {string} id - poet's id
+   * @param {Poet} poetData - poet's data
+   * @returns
+   */
+  async update(id: string, poetData: Poet): Promise<UpdateResult> {
+    return await db.update(id, poetData);
+  },
+  /**
+   * remove a Poet
+   * @param {string} id - poet's id
+   * @returns
+   */
+  async delete(id: string): Promise<DeleteResult> {
+    return await db.delete(id);
   },
 };
 
-export const PoetRedis = {
+/**
+ * control poets' data in cache
+ */
+export const PoetCache = {
+  /**
+   * get a poet from cache
+   * @param {string} id - poet's id
+   * @returns
+   */
   async get(id: string): Promise<string | null> {
     return await cacheClient.get(`poet:${id}`);
   },
-  async set(id: string, poet: PoetType): Promise<string | null> {
-    return await cacheClient.set(
-      `poet:${id}`,
-      JSON.stringify(poet),
-      'EX',
-      60 * 15,
-    );
+  /**
+   * set a poet to cache
+   * @param {string} id - poet's id
+   * @param {Poet} poet - poet's data
+   * @returns
+   */
+  async set(id: string, poet: Poet): Promise<string | Logger | null> {
+    return await cacheClient
+      .set(`poet:${id}`, JSON.stringify(poet), "EX", 60 * 15 )
+      .catch((err) => logger.error(`CacheError: couldn't cache poet:${id}`));
   },
+  /**
+   * check if a poet exists
+   * @param {string} id - poet's id
+   * @returns
+   */
   async exists(id: string): Promise<number> {
     return await cacheClient.exists(`poet:${id}`);
   },
+  /**
+   * delete a poet from cache
+   * @param {string} id - poet's id
+   * @returns
+   */
   async delete(id: string): Promise<number> {
     return await cacheClient.del(`poet:${id}`);
   },
