@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { array } from 'valibot';
 // Component
 import { ProseService } from './service';
-import { ERROR_MSG, ProseType } from './interface';
+import { ERROR_MSG } from './interface';
 import { createSchema, updateSchema } from './schema';
 // Utils
 import HttpStatusCode from '../../utils/httpStatusCode';
@@ -45,7 +45,7 @@ proseRoute.get('/:id', idParamValidator(), async (c) => {
 
 proseRoute.post('/', jsonValidator(createSchema), async (c) => {
   const proseData = await c.req.json();
-  const newProse = await ProseService.post(proseData as ProseType);
+  const newProse = await ProseService.post(proseData);
   if (!newProse)
     c.json({ message: ERROR_MSG.NOT_VALID }, HttpStatusCode.NOT_ACCEPTABLE);
   return c.json(newProse, HttpStatusCode.CREATED);
@@ -68,7 +68,7 @@ proseRoute.put(
     const newProse = await ProseService.update(c.req.param('id'), newData);
     if (!newProse)
       c.json({ message: ERROR_MSG.NOT_VALID }, HttpStatusCode.NOT_ACCEPTABLE);
-    return c.json(newProse, HttpStatusCode.ACCEPTED);
+    return c.json({}, HttpStatusCode.ACCEPTED);
   },
 );
 
@@ -76,5 +76,5 @@ proseRoute.delete('/:id', idParamValidator(), async (c) => {
   const deletedProse = await ProseService.delete(c.req.param('id'));
   if (!deletedProse)
     c.json({ message: ERROR_MSG.NOT_FOUND }, HttpStatusCode.NOT_ACCEPTABLE);
-  return c.json(deletedProse, HttpStatusCode.ACCEPTED);
+  return c.json({}, HttpStatusCode.ACCEPTED);
 });

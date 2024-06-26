@@ -8,19 +8,19 @@ import {
   minLength,
 } from 'valibot';
 // Utils
-import { mongoIdSchema, reviewedSchema, tagsSchema } from '../../utils/schemas';
+import { uuidSchema, reviewedSchema, tagsSchema } from '../../utils/schemas';
 
 export const qouteSchema = pipe(string(), trim(), minLength(4), maxLength(500));
 
 export const createSchema = object({
-  poet: mongoIdSchema,
+  poet: uuidSchema,
   tags: tagsSchema,
   qoute: qouteSchema,
   reviewed: reviewedSchema,
 });
 
 export const updateSchema = object({
-  poet: optional(mongoIdSchema),
+  poet: optional(uuidSchema),
   tags: optional(tagsSchema),
   qoute: optional(qouteSchema),
   reviewed: optional(reviewedSchema),
