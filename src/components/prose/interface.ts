@@ -1,12 +1,4 @@
-import { PoetType } from '../poet/interface';
 
-export interface ProseType {
-  _id: string;
-  poet: string | PoetType;
-  tags: string;
-  qoute: string;
-  reviewed: boolean;
-}
 
 export enum ERROR_MSG {
   NOT_AVAILABLE = 'No prose available',
